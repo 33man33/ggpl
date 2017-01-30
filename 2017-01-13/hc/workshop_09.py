@@ -185,18 +185,15 @@ def support_plane(angle, line):
 	z2 = points[1][2]
 	z3 = points[2][2]
 
-	#calculate the vectors
 	p1 = np.array([x1, y1, z1])
 	p2 = np.array([x2, y2, z2])
 	p3 = np.array([x3, y3, z3])
 
 	v1 = p3 - p1
 	v2 = p2 - p1 
-	# this is a vector normal to the plane
 	cp = np.cross(v1, v2)
 	a, b, c = cp 
 
-	# This evaluates a * x3 + b * y3 + c * z3 which equals d
 	d = np.dot(cp, p3)
 
 	return [a,b,c,d]
@@ -218,7 +215,6 @@ def buildRoof(verts, angle, height):
 	roofTop = []
 	linesEquations = []
 
-	# calculating equations with planes intersection
 	for couple in couplePlanes:
 		x, y, z = symbols('x y z')
 		solved = solve([Eq(couple[0][0]*x+couple[0][1]*y+couple[0][2]*z, couple[0][3]), 
@@ -231,8 +227,6 @@ def buildRoof(verts, angle, height):
 
 	coupleLines = transflist(linesEquations)
 	roofPitch = []
-
-	#building roof pitches
 	for couple in coupleLines:
 		base1 = [round(float((couple[0])[x].subs(z,0)),2),round(float((couple[0])[y].subs(z,0)),2),0]
 		base2 = [round(float((couple[1])[x].subs(z,0)),2),round(float((couple[1])[y].subs(z,0)),2),0]
