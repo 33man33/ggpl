@@ -107,25 +107,44 @@ def ggpl_door(X,Y,occurrency):
     return door
 
 def window_creator(X,Y,occurrency):
-	
-	def window_aux(dx,dy,dz):
-		
+	def window0(dx,dy,dz):
+		f = CUBOID([dx/2.*.975,0.01,dz])
+		fdiff = S([1,3])([.95,.95])(f)
+		fdiff = T([1,3])([SIZE([1])(f)[0]*.025, SIZE([3])(f)[0]*.025])(fdiff)
+		f = DIFFERENCE([f, fdiff])
+		f = T([1,2,3])([SIZE([1])(f)[0]*.025, dy ,SIZE([3])(f)[0]*.025])(f)
+		f2 = T(1)(dx/2.- SIZE([1])(f)[0]*.025)(f)
+		obj = CYLINDER([0.02, .1])(40)
+		obj = T([1,2,3])([dx - SIZE([1])(f)[0]*.025,dy*1.02,dz/4.])(obj)
+		obj2 = T([3])([dz/2.])(obj)
+		handle = CUBOID([.02,.02,.015])
+		handle2 = CUBOID([.02,.02,.1])
+		handle2 = T([2,3])([.02,-.085])(handle2)
+		handles = STRUCT([handle,handle2])
+		handle = T([1,2,3])([dx/2.- SIZE([1])(f)[0]*.025 - SIZE([1])(handles)[0], dy, 11*dz/20.])(handles)
+		handle2 = T([1,2,3])([dx/2.+ SIZE([1])(f)[0]*.025, dy, 11*dz/20.])(handles)
 		remodular(X,Y,occurrency, dx, dz)
 		result = []
-		for x in range(len(X)):
+		for x_index in range(len(X)):
 			y_quotes = []
-			x_sum = sum(X[:x])
-			for y in range(len(Y)):
-				if(occurrency[x][y] == False):
-					y_quotes.append(-Y[y])
+			x_sum = sum(X[:x_index])
+			for y_index in range(len(Y)):
+				if(occurrency[x_index][y_index] == False):
+					y_quotes.append(-Y[y_index])
 				else:
-					y_quotes.append(Y[y])
-			result.append(PROD([ QUOTE([-x_sum, X[x]]), QUOTE(y_quotes)]))
-		result.append(BOX([dx,dz,dy]))
-		res = PROD([STRUCT(result), Q(dy)])
-		res = B(STRUCT([MAP([S1,S3,S2])(res)]))
-		return STRUCT([res])
-	return window_aux
+					y_quotes.append(Y[y_index])
+			result.append(PROD([ QUOTE([-x_sum, X[x_index]]), QUOTE(y_quotes)]))
+		res = STRUCT(result)
+		res = MAP([S1,S3,S2])(PROD([res, Q(dy)]))
+		glass = CUBOID([SIZE([1])(res)[0]*0.99,dy/4.*.99,SIZE([3])(res)[0]*0.99])
+		glass = T([1,2,3])([dx*0.01, dy/7.+dy*0.01, dz*0.01])(glass)
+		glass = COLOR(Color4f([38/255.,226/255.,189/255.,1]))(glass) 
+		windowf = STRUCT([res, f, f2, obj, obj2, handle, handle2])
+		windowf = COLOR(Color4f([93/255., 94/255., 107/255., 1]))(windowf)
+		window = STRUCT([windowf, glass])
+		window = S([1,2,3])([dx/SIZE([1])(window)[0], dy/SIZE([2])(window)[0], dz/SIZE([3])(window)[0]])(window)
+		return window
+	return window0
 
 
 
