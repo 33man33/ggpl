@@ -1,6 +1,41 @@
 from pyplasm import *
 import csv
 
+def createStruct(file_name):
+	lines = lines2lines(file_name)
+	vert,eve = lines2lar(lines)
+	level = STRUCT(MKPOLS((vert,eve)))
+	level = OFFSET([n,n])(level)
+	level = PROD([level,H])
+	return level
+
+def create_wall(f,dim):
+	with open(f, "rb") as file:
+		br = csv.reader(file, delimiter=",")
+		w = []
+		for r in br:
+			w.append(POLYLINE([[float(r[0]), float(r[1])],[float(r[2]), float(r[3])]]))
+	w = STRUCT(w)
+	w = OFFSET([dim,dim])(w)
+	return w
+
+def create_floor(f, dim):
+	i = 0
+	verts = []
+	cells = []
+	pols = None
+	with open(f, 'rb') as file:
+        	br = csv.reader(file,delimiter=",")
+        	for r in br:
+            		verts.append([float(r[0]), float(r[1])])
+                    j = i+1
+            		verts.append([float(r[2]), float(r[3])])
+            		i = i+1
+            		cells.extend([j, i])
+    	tot = OFFSET([dim, dim])(MKPOL([verts,[cells],pols]))
+	return tot
+
+
 def build_ladder(filel, factorx, buildl):
 	
 	with open(filel, "rb") as file:
